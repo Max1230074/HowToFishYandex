@@ -1,0 +1,45 @@
+name: Build WebGL
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch: {}
+
+concurrency:
+  group: webgl-build
+  cancel-in-progress: false
+
+jobs:
+  build:
+    name: Build WebGL (Unity 6000.0.23f1)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          lfs: true
+
+      - uses: actions/cache@v4
+        with:
+          path: Library
+          key: Library-WebGL-${{ hashFiles('Packages/manifest.json') }}
+          restore-keys: |
+            Library-WebGL-
+            Library-
+
+      - uses: jlumbroso/free-disk-space@v1.3.1
+        with:
+          tool-cache: false
+
+      - uses: game-ci/unity-builder@v4
+        env:
+          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+        with:
+          unityVersion: 6000.0.23f1
+          targetPlatform: WebGL
+          projectPath: ./
+
+      - uses: actions/upload-artifact@v4
+        with:
+          name: WebGL-build
+          path: build/WebGL
