@@ -1,0 +1,23 @@
+name: Создать файл активации Unity
+
+on:
+  workflow_dispatch: {}
+
+jobs:
+  activation:
+    name: Generate .alf
+    runs-on: ubuntu-latest
+    steps:
+      - name: Generate manual activation file
+        run: |
+          mkdir -p "$GITHUB_WORKSPACE/alf-out"
+          docker run --rm \
+            -v "$GITHUB_WORKSPACE/alf-out":/alf-out \
+            -e HOME=/alf-out \
+            unityci/editor:ubuntu-6000.0.23f1-base-3 \
+            /bin/bash -lc 'unity-editor -batchmode -nographics -createManualActivationFile -logfile -'
+          find "$GITHUB_WORKSPACE/alf-out" -type f -exec ls -la {} \;
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Manual Activation File (.alf)
+          path: alf-out
