@@ -13,7 +13,7 @@ jobs:
   build:
     name: Build WebGL (Unity 6000.0.23f1)
     runs-on: ubuntu-latest
-    if: ${{ secrets.UNITY_LICENSE != '' }}
+    if: ${{ secrets.UNITY_EMAIL != '' }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -34,7 +34,8 @@ jobs:
 
       - uses: game-ci/unity-builder@v4
         env:
-          UNITY_LICENSE: ${{ secrets.UNITY_LICENSE }}
+          UNITY_EMAIL: ${{ secrets.UNITY_EMAIL }}
+          UNITY_PASSWORD: ${{ secrets.UNITY_PASSWORD }}
         with:
           unityVersion: 6000.0.23f1
           targetPlatform: WebGL
