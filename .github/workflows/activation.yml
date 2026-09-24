@@ -15,8 +15,8 @@ jobs:
             -v "$GITHUB_WORKSPACE/alf-out":/alf-out \
             -e HOME=/alf-out \
             unityci/editor:ubuntu-6000.0.23f1-base-3 \
-            /bin/bash -lc 'unity-editor -batchmode -nographics -createManualActivationFile -logfile -'
-          find "$GITHUB_WORKSPACE/alf-out" -type f -exec ls -la {} \;
+            /bin/bash -lc 'unity-editor -batchmode -nographics -createManualActivationFile /alf-out/Unity_v6000.0.23f1.alf -logfile - || true; find / -name "*.alf" -exec cp -v {} /alf-out/ \\; 2>/dev/null || true'
+          find "$GITHUB_WORKSPACE/alf-out" -name "*.alf" -exec ls -la {} \;
       - uses: actions/upload-artifact@v4
         with:
           name: Manual Activation File (.alf)
